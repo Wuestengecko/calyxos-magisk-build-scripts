@@ -1,16 +1,18 @@
-# CalyxOS  Magisk
+# CalyxOS :heart: Magisk
 
 This repo contains scripts for building an AVB signed CalyxOS 4.x (Android 13)
 image with integrated Magisk for root access.
 
-> **Disclaimer**: This works for me, but I don't give any guarantees. Whatever
-> you do is on you, and if anything breaks you take full responsibility.
-> Especially take note that you will have to wipe your device's user data when
-> switching from (or back to) an official CalyxOS build.
+> **Disclaimer**
+> This works for me, but I don't give any guarantees. Whatever you do is on
+> you, and if anything breaks you take full responsibility. Especially take
+> note that you will have to wipe your device's user data when switching from
+> (or back to) an official CalyxOS build.
 
-> **Warning**: You yourself will be responsible to watch out for security
-> updates and apply them in a timely manner, as you will no longer be able to
-> receive automatic updates via the official channels.
+> **Warning**
+> You yourself will be responsible to watch out for security updates and apply
+> them in a timely manner, as you will no longer be able to receive automatic
+> updates via the official channels.
 
 ## Building
 
@@ -37,8 +39,8 @@ image with integrated Magisk for root access.
    official CalyxOS docs].
 
 3. Inside this repo clone, download the CalyxOS sources into the "build"
-   subdirectory, as described by [the official CalyxOS docs], "Downloading the source
-   code":
+   subdirectory, as described by [the official CalyxOS docs], "Downloading the
+   source code":
 
    ```sh
    mkdir build
@@ -63,15 +65,10 @@ image with integrated Magisk for root access.
    memory and make the build fail. The "tmp" directory here is mounted into the
    build environment's `/tmp` to prevent this issue.
 
-5. Write your device's codename into a file called `device-codename.txt`, and
-   place that file next to these build scripts.
+5. Update the `build_config.sh` file with the correct values for your device.
+   Refer to the instructions in that file for more details.
 
-   ```sh
-   # Example: "sunfish" is Pixel 4a
-   echo sunfish > device-codename.txt
-   ```
-
-6. Optional: Customize how many build jobs run in parallel. If your machine
+6. *Optional*: Customize how many build jobs run in parallel. If your machine
    doesn't have a lot of RAM, you might otherwise run out of memory during
    compilation. In the `01-build.sh`, look for the line that says `m -j8`, and
    adjust the number as needed.

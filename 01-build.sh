@@ -21,6 +21,8 @@ fi
     repo sync \
       --jobs-network=4 --jobs-checkout=8 \
       --current-branch --detach --force-remove-dirty --force-sync
+    repo forall --jobs=4 -epv \
+      -c git lfs pull
 
     ./calyx/scripts/pixel/device.sh "$DEVICE_CODENAME"
   else

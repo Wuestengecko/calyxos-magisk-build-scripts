@@ -29,7 +29,7 @@ fi
 
   # shellcheck source=build/build/envsetup.sh
   source build/envsetup.sh
-  lunch "calyx_$DEVICE_CODENAME-ap1a-user"
+  lunch "$RELEASE_CODE"
 
   ##########################################################
   # You may want to change the number of parallel jobs here.

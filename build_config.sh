@@ -7,6 +7,8 @@
 # Set this to the codename of your device
 readonly DEVICE_CODENAME=oriole
 
+readonly RELEASE_CODE=calyx_$DEVICE_CODENAME-ap2a-user
+
 # Specify the correct target partition for your device
 # Devices launched with Android 13 and up need "init_boot" here
 # If you have an older device, use "boot" instead

@@ -18,6 +18,8 @@ fi
   set -ex
   cd build
   if [[ $CALYXBUILD_NO_SYNC != 1 ]]; then
+    repo forall --jobs=4 \
+      -c sh -c 'git restore -WSq . || :'
     repo sync \
       --jobs-network=4 --jobs-checkout=8 \
       --current-branch --detach --force-remove-dirty --force-sync

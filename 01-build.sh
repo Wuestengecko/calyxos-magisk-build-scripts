@@ -21,8 +21,10 @@ fi
     repo sync \
       --jobs-network=4 --jobs-checkout=8 \
       --current-branch --detach --force-remove-dirty --force-sync
+    git lfs install
+    # shellcheck disable=SC2016
     repo forall --jobs=4 -epv \
-      -c git lfs pull
+      -c sh -c 'git lfs install && git lfs pull $(git remote | head -n1) -I ""'
 
     ./calyx/scripts/pixel/device.sh "$DEVICE_CODENAME"
   else

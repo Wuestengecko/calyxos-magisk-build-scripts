@@ -35,7 +35,7 @@ fi
 
   # shellcheck source=build/build/envsetup.sh
   source build/envsetup.sh
-  lunch "$RELEASE_CODE"
+  breakfast "$DEVICE_CODENAME" user
 
   ##########################################################
   # You may want to change the number of parallel jobs here.

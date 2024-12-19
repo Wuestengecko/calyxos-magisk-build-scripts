@@ -1,5 +1,7 @@
 #!/bin/bash -x
-cd "${0%/*}"; exec bwrap --ro-bind / / --dev-bind {,}/dev --bind {,}/etc --tmpfs /home --bind {,}"$PWD" --bind "$PWD/tmp" /tmp --chdir "$PWD" -- bash < <(tail -n+3 "$(readlink -f "$0")")
+cd "${0%/*}"
+mkdir -p "$PWD/tmp"
+exec bwrap --ro-bind / / --dev-bind {,}/dev --bind {,}/etc --tmpfs /home --bind {,}"$PWD" --bind "$PWD/tmp" /tmp --chdir "$PWD" -- bash < <(tail -n+6 "$(readlink -f "$0")")
 
 source ./build_config.sh
 

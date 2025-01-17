@@ -14,20 +14,19 @@ apk="$(wget https://raw.githubusercontent.com/topjohnwu/magisk-files/master/stab
 wget -O magisk.apk "$apk"
 unzip magisk.apk
 
+install -m755 "lib/arm64-v8a/libmagiskinit.so" "assets/magiskinit"
+install -m755 "lib/arm64-v8a/libmagisk.so" "assets/magisk"
+install -m755 "lib/x86_64/libmagiskboot.so" "assets/magiskboot"
+install -m755 "lib/arm64-v8a/libinit-ld.so" "assets/init-ld"
+
 install -m755 /dev/stdin ./root-img.sh << \_ROOT_IMG_EOF
 #!/bin/bash
 
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 export PATH=$PATH:$SCRIPT_DIR
-
 export BOOTMODE=true
 export KEEPVERITY=true
-
-cp "$SCRIPT_DIR/lib/x86/libmagiskboot.so" "$SCRIPT_DIR/assets/magiskboot"
-cp "$SCRIPT_DIR/lib/arm64-v8a/libmagisk64.so" "$SCRIPT_DIR/assets/magisk64"
-cp "$SCRIPT_DIR/lib/armeabi-v7a/libmagisk32.so" "$SCRIPT_DIR/assets/magisk32"
-cp "$SCRIPT_DIR/lib/arm64-v8a/libmagiskinit.so" "$SCRIPT_DIR/assets/magiskinit"
 
 . "$SCRIPT_DIR/assets/boot_patch.sh" "$@"
 _ROOT_IMG_EOF
@@ -58,15 +57,15 @@ done
 
 if [[ $1 == add_hash_footer ]]; then
   if [[ $PARTITION_NAME != "$TARGET_PARTITION" ]]; then
-    echo "ROOTING : Ignoring: not the target partition" >> "$MAGISK_DIR"/rooting.log
+    echo "ROOTING : Ignoring: not the target partition"
   elif [[ $KEY != */avb.pem ]]; then
-    echo "ROOTING : Ignoring: not the AVB key" >> "$MAGISK_DIR"/rooting.log
+    echo "ROOTING : Ignoring: not the AVB key"
   else
-    echo "ROOTING : Starting to root $BOOT_IMG_PATH" >> "$MAGISK_DIR"/rooting.log
-    "$MAGISK_DIR/root-img.sh" "$BOOT_IMG_PATH" >> "$MAGISK_DIR"/rooting.log
-    cp -v "$MAGISK_DIR/assets/new-boot.img" "$BOOT_IMG_PATH" >> "$MAGISK_DIR"/rooting.log
+    echo "ROOTING : Starting to root $BOOT_IMG_PATH"
+    "$MAGISK_DIR/root-img.sh" "$BOOT_IMG_PATH"
+    cp -v "$MAGISK_DIR/assets/new-boot.img" "$BOOT_IMG_PATH"
   fi
-fi
+fi 2>&1 |tee -a "$MAGISK_DIR/rooting.log" >&2
 
 exec "$SCRIPT_DIR/avbtool.real" "$@"
 _AVBTOOL_EOF
@@ -77,6 +76,13 @@ install -m755 /dev/stdin bin/toybox << \_TOYBOX_EOF
 set -o errexit -o pipefail -o noclobber -o nounset
 echo "%%%%%%%%%% $(date +%Y-%m-%d\ %H:%M:%S) ${0##*/} $*" >> $MAGISK_DIR/rooting.log
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+if [[ $1 == cpio ]] && [[ $2 == -F ]] ;
+then
+        echo ignoring toybox error >> "$SCRIPT_DIR/toybox-invokes.txt"
+        "$SCRIPT_DIR/toybox.real" "$@" >> "$SCRIPT_DIR/toybox-invokes.txt" 2>&1 || true
+        exit 0
+fi
 
 exec "$SCRIPT_DIR/toybox.real" "$@"
 _TOYBOX_EOF

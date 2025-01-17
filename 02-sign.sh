@@ -16,9 +16,13 @@ if [[ -e keys ]]; then
 fi
 mkdir keys
 
+incoming_filename="calyx_$DEVICE_CODENAME-target_files.zip"
+numbered_filename="calyx_$DEVICE_CODENAME-target_files-${BUILD_NUMBER}.zip"
 ( cd sign
   if [[ ! -e keys ]]; then ln -s ../keys keys; fi
-  mv -v "calyx_$DEVICE_CODENAME-target_files.zip" "calyx_$DEVICE_CODENAME-target_files-${BUILD_NUMBER}.zip"
+  if [[ -e "$incoming_filename" ]]; then
+    mv -v "$incoming_filename" "$numbered_filename"
+  fi
   unzip -o otatools-keys.zip
   # These commands attempt to generate some keys twice, which fails on the second attempt.
   # It's safe to ignore this error and continue anyways.
@@ -37,7 +41,7 @@ if [[ -e ./02b-magisk.sh ]]; then
 fi
 
 ( cd sign
-  ./vendor/calyx/scripts/release.sh "$DEVICE_CODENAME" "calyx_$DEVICE_CODENAME-target_files-$BUILD_NUMBER.zip"
+  ./vendor/calyx/scripts/release.sh "$DEVICE_CODENAME" "$numbered_filename"
 )
 cp -v "$keybackup" "sign/out/release-$DEVICE_CODENAME-$BUILD_NUMBER/"
 
